@@ -88,7 +88,7 @@ Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)/ Bootstrap(CSS)/ jQuery +
 - REST контроллеры
 - Тестирование REST контроллеров. Jackson
 - jackson-datatype-hibernate. Тестирование через матчеры
-- Тестирование через SoapUi. UTF-8
+- Тестирование через SoapUI. UTF-8
 - Домашнее задание (HW7 + Optional)
 
 #### 26.04: 8-е занятие
