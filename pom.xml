@@ -19,7 +19,7 @@
         <spring.version>5.1.7.RELEASE</spring.version>
         <spring.security.version>5.1.5.RELEASE</spring.security.version>
         <spring-data-jpa.version>2.1.9.RELEASE</spring-data-jpa.version>
-        <jackson-json.version>2.9.9</jackson-json.version>
+        <jackson-json.version>2.10.1</jackson-json.version>
         <tomcat.version>9.0.22</tomcat.version>
 
         <!-- Logging -->
