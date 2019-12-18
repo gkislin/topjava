@@ -16,9 +16,8 @@ import java.util.List;
 @RequestMapping(value = AdminRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminRestController extends AbstractUserController {
 
-    public static final String REST_URL = "/rest/admin/users";
+    static final String REST_URL = "/rest/admin/users";
 
-    @Override
     @GetMapping
     public List<User> getAll() {
         return super.getAll();
@@ -55,8 +54,7 @@ public class AdminRestController extends AbstractUserController {
 
     @GetMapping("/by")
     public User getByMail(@RequestParam String email) {
-        log.info("getByEmail {}", email);
-        return service.getByEmail(email);
+        return super.getByMail(email);
     }
 
     @Override

@@ -1,7 +1,7 @@
-const userAjaxUrl = "ajax/admin/users/";
+var userAjaxUrl = "ajax/admin/users/";
 
 function enable(chkbox, id) {
-    const enabled = chkbox.is(":checked");
+    var enabled = chkbox.is(":checked");
 //  https://stackoverflow.com/a/22213543/548473
     $.ajax({
         url: userAjaxUrl + id,

@@ -23,7 +23,7 @@ public abstract class AbstractUserController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    protected UserService service;
+    private UserService service;
 
     @Autowired
     private UniqueMailValidator emailValidator;
@@ -52,6 +52,7 @@ public abstract class AbstractUserController {
     }
 
     public User create(UserTo userTo) {
+        log.info("create from to {}", userTo);
         return create(UserUtil.createNewFromTo(userTo));
     }
 
@@ -79,6 +80,11 @@ public abstract class AbstractUserController {
         assureIdConsistent(userTo, id);
         checkModificationAllowed(id);
         service.update(userTo);
+    }
+
+    public User getByMail(String email) {
+        log.info("getByEmail {}", email);
+        return service.getByEmail(email);
     }
 
     public void enable(int id, boolean enabled) {

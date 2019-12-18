@@ -20,7 +20,7 @@ class JsonUtilTest {
         String json = JsonUtil.writeValue(ADMIN_MEAL1);
         System.out.println(json);
         Meal meal = JsonUtil.readValue(json, Meal.class);
-        assertMatch(meal, ADMIN_MEAL1);
+        MEAL_MATCHERS.assertMatch(meal, ADMIN_MEAL1);
     }
 
     @Test
@@ -28,7 +28,7 @@ class JsonUtilTest {
         String json = JsonUtil.writeValue(MEALS);
         System.out.println(json);
         List<Meal> meals = JsonUtil.readValues(json, Meal.class);
-        assertMatch(meals, MEALS);
+        MEAL_MATCHERS.assertMatch(meals, MEALS);
     }
 
     @Test
@@ -36,7 +36,7 @@ class JsonUtilTest {
         String json = JsonUtil.writeValue(UserTestData.USER);
         System.out.println(json);
         assertThat(json, not(containsString("password")));
-        String jsonWithPass = UserTestData.jsonWithPassword(UserTestData.USER, "newPass");
+        String jsonWithPass = JsonUtil.writeAdditionProps(UserTestData.USER, "password", "newPass");
         System.out.println(jsonWithPass);
         User user = JsonUtil.readValue(jsonWithPass, User.class);
         assertEquals(user.getPassword(), "newPass");

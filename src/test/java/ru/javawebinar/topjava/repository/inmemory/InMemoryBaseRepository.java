@@ -9,32 +9,34 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
+
 @Repository
 public class InMemoryBaseRepository<T extends AbstractBaseEntity> {
 
-    private static AtomicInteger counter = new AtomicInteger(0);
+    private static AtomicInteger counter = new AtomicInteger(START_SEQ);
 
-    Map<Integer, T> entryMap = new ConcurrentHashMap<>();
+    Map<Integer, T> map = new ConcurrentHashMap<>();
 
     public T save(T entry) {
         Objects.requireNonNull(entry, "Entry must not be null");
         if (entry.isNew()) {
             entry.setId(counter.incrementAndGet());
-            entryMap.put(entry.getId(), entry);
+            map.put(entry.getId(), entry);
             return entry;
         }
-        return entryMap.computeIfPresent(entry.getId(), (id, oldT) -> entry);
+        return map.computeIfPresent(entry.getId(), (id, oldT) -> entry);
     }
 
     public boolean delete(int id) {
-        return entryMap.remove(id) != null;
+        return map.remove(id) != null;
     }
 
     public T get(int id) {
-        return entryMap.get(id);
+        return map.get(id);
     }
 
     Collection<T> getCollection() {
-        return entryMap.values();
+        return map.values();
     }
 }

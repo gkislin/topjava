@@ -4,14 +4,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-<!--
-    <bean class="ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepository"/>
+    <!--
+        <bean class="ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepository" id="inmemoryUserRepository"/>
 
-    <bean class="ru.javawebinar.topjava.service.UserService">
-        <constructor-arg name="repository" ref="inMemoryUserRepository"/>
-    </bean>
--->
-    <import resource="spring-tools.xml"/>
+        <bean class="ru.javawebinar.topjava.service.UserService">
+            <constructor-arg name="repository" ref="inmemoryUserRepository"/>
+        </bean>
+    -->
+    <import resource="spring-cache.xml"/>
     <import resource="spring-security.xml"/>
 
     <!-- Not necessary, already included with component-scan -->

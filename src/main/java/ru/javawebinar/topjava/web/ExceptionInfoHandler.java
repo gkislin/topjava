@@ -47,7 +47,7 @@ public class ExceptionInfoHandler {
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ErrorInfo> applicationError(HttpServletRequest req, ApplicationException appEx) {
         ErrorInfo errorInfo = logAndGetErrorInfo(req, appEx, false, appEx.getType(), messageUtil.getMessage(appEx));
-        return ResponseEntity.status(appEx.getHttpStatus()).body(errorInfo);
+        return ResponseEntity.status(appEx.getType().getStatus()).body(errorInfo);
     }
 
     @ResponseStatus(value = HttpStatus.CONFLICT)  // 409
@@ -91,6 +91,7 @@ public class ExceptionInfoHandler {
         return logAndGetErrorInfo(req, e, true, APP_ERROR);
     }
 
+    //    https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
     private ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType, String... details) {
         Throwable rootCause = ValidationUtil.logAndGetRootCause(log, req, e, logException, errorType);
         return new ErrorInfo(req.getRequestURL(), errorType,

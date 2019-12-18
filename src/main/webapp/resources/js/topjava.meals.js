@@ -1,4 +1,4 @@
-const mealAjaxUrl = "ajax/profile/meals/";
+var mealAjaxUrl = "ajax/profile/meals/";
 
 function updateFilteredTable() {
     $.ajax({
@@ -17,7 +17,7 @@ function clearFilter() {
 $.ajaxSetup({
     converters: {
         "text json": function (stringData) {
-            const json = JSON.parse(stringData);
+            var json = JSON.parse(stringData);
             $(json).each(function () {
                 this.dateTime = this.dateTime.replace('T', ' ').substr(0, 16);
             });
@@ -67,8 +67,8 @@ $(function () {
     $.datetimepicker.setLocale(localeCode);
 
 //  http://xdsoft.net/jqplugins/datetimepicker/
-    const startDate = $('#startDate');
-    const endDate = $('#endDate');
+    var startDate = $('#startDate');
+    var endDate = $('#endDate');
     startDate.datetimepicker({
         timepicker: false,
         format: 'Y-m-d',
@@ -90,8 +90,8 @@ $(function () {
         }
     });
 
-    const startTime = $('#startTime');
-    const endTime = $('#endTime');
+    var startTime = $('#startTime');
+    var endTime = $('#endTime');
     startTime.datetimepicker({
         datepicker: false,
         format: 'H:i',

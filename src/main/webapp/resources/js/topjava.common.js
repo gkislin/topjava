@@ -1,4 +1,4 @@
-let context, form;
+var context, form;
 
 function makeEditable(ctx) {
     context = ctx;
@@ -26,8 +26,8 @@ function makeEditable(ctx) {
     // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
     $.ajaxSetup({cache: false});
 
-    const token = $("meta[name='_csrf']").attr("content");
-    const header = $("meta[name='_csrf_header']").attr("content");
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
     $(document).ajaxSend(function (e, xhr, options) {
         xhr.setRequestHeader(header, token);
     });
@@ -66,6 +66,7 @@ function updateTableByData(data) {
 }
 
 function save() {
+    closeNoty();
     $.ajax({
         type: "POST",
         url: context.ajaxUrl,
@@ -77,7 +78,7 @@ function save() {
     });
 }
 
-let failedNote;
+var failedNote;
 
 function closeNoty() {
     if (failedNote) {
@@ -98,7 +99,7 @@ function successNoty(key) {
 
 function failNoty(jqXHR) {
     closeNoty();
-    const errorInfo = JSON.parse(jqXHR.responseText);
+    var errorInfo = JSON.parse(jqXHR.responseText);
     failedNote = new Noty({
         text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.typeMessage + "<br>" + errorInfo.details.join("<br>"),
         type: "error",
