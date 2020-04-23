@@ -4,7 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePropertySource;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 
@@ -13,15 +16,14 @@ import java.io.IOException;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.Profiles.HEROKU;
+import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
 import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.util.exception.ModificationRestrictionException.EXCEPTION_MODIFICATION_RESTRICTION;
 
 @ActiveProfiles({HEROKU})
 class HerokuRestControllerTest extends AbstractControllerTest {
 
-    public HerokuRestControllerTest() {
-        super(AdminRestController.REST_URL);
-    }
+    private static final String REST_URL = AdminRestController.REST_URL + '/';
 
     // Set DATABASE_URL environment for heroku profile
     static {
@@ -42,7 +44,8 @@ class HerokuRestControllerTest extends AbstractControllerTest {
 
     @Test
     void delete() throws Exception {
-        perform(doDelete(USER_ID).basicAuth(ADMIN))
+        perform(MockMvcRequestBuilders.delete(REST_URL + USER_ID)
+                .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(errorType(ErrorType.VALIDATION_ERROR))
                 .andExpect(detailMessage(EXCEPTION_MODIFICATION_RESTRICTION))
@@ -51,7 +54,10 @@ class HerokuRestControllerTest extends AbstractControllerTest {
 
     @Test
     void update() throws Exception {
-        perform(doPut(USER_ID).jsonUserWithPassword(USER).basicAuth(ADMIN))
+        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(UserTestData.jsonWithPassword(USER, "password")))
                 .andExpect(errorType(ErrorType.VALIDATION_ERROR))
                 .andExpect(detailMessage(EXCEPTION_MODIFICATION_RESTRICTION))
                 .andExpect(status().isUnprocessableEntity());

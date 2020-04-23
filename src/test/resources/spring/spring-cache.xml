@@ -15,7 +15,6 @@
     <!-- Disabling spring cache -->
     <bean id="noOpCacheManager" class="org.springframework.cache.support.NoOpCacheManager"/>
 
-
     <!-- Disabling Hibernate 2-d level cache -->
     <beans profile="jpa,datajpa">
         <util:properties id="disableCache">

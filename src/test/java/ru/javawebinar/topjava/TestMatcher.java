@@ -7,27 +7,27 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javawebinar.topjava.TestUtil.readListFromJsonMvcResult;
 
-public class TestMatchers<T> {
+public class TestMatcher<T> {
     private final Class<T> clazz;
     private final String[] fieldsToIgnore;
-    private final boolean useEquals;
+    private final boolean usingEquals;
 
-    public static <T> TestMatchers<T> useFieldsComparator(Class<T> clazz, String... fieldsToIgnore) {
-        return new TestMatchers<>(clazz, false, fieldsToIgnore);
-    }
-
-    public static <T> TestMatchers<T> useEquals(Class<T> clazz) {
-        return new TestMatchers<>(clazz, true);
-    }
-
-    private TestMatchers(Class<T> clazz, boolean useEquals, String... fieldsToIgnore) {
+    private TestMatcher(Class<T> clazz, boolean usingEquals, String... fieldsToIgnore) {
         this.clazz = clazz;
-        this.useEquals = useEquals;
         this.fieldsToIgnore = fieldsToIgnore;
+        this.usingEquals = usingEquals;
+    }
+
+    public static <T> TestMatcher<T> usingEquals(Class<T> clazz) {
+        return new TestMatcher<>(clazz, true);
+    }
+
+    public static <T> TestMatcher<T> usingFieldsComparator(Class<T> clazz, String... fieldsToIgnore) {
+        return new TestMatcher<>(clazz, false, fieldsToIgnore);
     }
 
     public void assertMatch(T actual, T expected) {
-        if (useEquals) {
+        if (usingEquals) {
             assertThat(actual).isEqualTo(expected);
         } else {
             assertThat(actual).isEqualToIgnoringGivenFields(expected, fieldsToIgnore);
@@ -39,7 +39,7 @@ public class TestMatchers<T> {
     }
 
     public void assertMatch(Iterable<T> actual, Iterable<T> expected) {
-        if (useEquals) {
+        if (usingEquals) {
             assertThat(actual).isEqualTo(expected);
         } else {
             assertThat(actual).usingElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(expected);

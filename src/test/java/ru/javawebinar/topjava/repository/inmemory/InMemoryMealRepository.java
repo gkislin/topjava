@@ -26,9 +26,10 @@ public class InMemoryMealRepository implements MealRepository {
 
     {
         var userMeals = new InMemoryBaseRepository<Meal>();
-        usersMealsMap.put(UserTestData.USER_ID, userMeals);
         MealTestData.MEALS.forEach(meal -> userMeals.map.put(meal.getId(), meal));
+        usersMealsMap.put(UserTestData.USER_ID, userMeals);
     }
+
 
     @Override
     public Meal save(Meal meal, int userId) {
@@ -60,13 +61,15 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public List<Meal> getAll(int userId) {
-        return getAllFiltered(userId, meal -> true);
+    public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
+        Objects.requireNonNull(startDateTime, "startDateTime must not be null");
+        Objects.requireNonNull(endDateTime, "endDateTime must not be null");
+        return getAllFiltered(userId, meal -> Util.isBetweenHalfOpen(meal.getDateTime(), startDateTime, endDateTime));
     }
 
     @Override
-    public List<Meal> getBetweenInclusive(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return getAllFiltered(userId, meal -> Util.isBetweenInclusive(meal.getDateTime(), startDateTime, endDateTime));
+    public List<Meal> getAll(int userId) {
+        return getAllFiltered(userId, meal -> true);
     }
 
     private List<Meal> getAllFiltered(int userId, Predicate<Meal> filter) {

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.MealTestData;
@@ -12,6 +13,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
+import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.readFromJson;
-import static ru.javawebinar.topjava.TestUtil.readFromJsonMvcResult;
+import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
 import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 import static ru.javawebinar.topjava.util.MealsUtil.createTo;
@@ -31,100 +33,112 @@ import static ru.javawebinar.topjava.web.ExceptionInfoHandler.EXCEPTION_DUPLICAT
 
 class MealRestControllerTest extends AbstractControllerTest {
 
+    private static final String REST_URL = MealRestController.REST_URL + '/';
+
     @Autowired
     private MealService mealService;
 
-    MealRestControllerTest() {
-        super(MealRestController.REST_URL);
-    }
-
     @Test
     void get() throws Exception {
-        perform(doGet(ADMIN_MEAL_ID).basicAuth(ADMIN))
+        perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID)
+                .with(userHttpBasic(USER)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(result -> MEAL_MATCHERS.assertMatch(readFromJsonMvcResult(result, Meal.class), ADMIN_MEAL1));
+                .andExpect(MEAL_MATCHER.contentJson(MEAL1));
     }
-
 
     @Test
     void getUnauth() throws Exception {
-        perform(doGet(MEAL1_ID))
+        perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void getNotFound() throws Exception {
-        perform(doGet(ADMIN_MEAL_ID).basicAuth(USER))
+        perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_MEAL_ID)
+                .with(userHttpBasic(USER)))
+                .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
     void delete() throws Exception {
-        perform(doDelete(MEAL1_ID).basicAuth(USER))
+        perform(MockMvcRequestBuilders.delete(REST_URL + MEAL1_ID)
+                .with(userHttpBasic(USER)))
                 .andExpect(status().isNoContent());
         assertThrows(NotFoundException.class, () -> mealService.get(MEAL1_ID, USER_ID));
     }
 
     @Test
     void deleteNotFound() throws Exception {
-        perform(doDelete(ADMIN_MEAL_ID).basicAuth(USER))
-                .andDo(print())
+        perform(MockMvcRequestBuilders.delete(REST_URL + ADMIN_MEAL_ID)
+                .with(userHttpBasic(USER)))
                 .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
     void update() throws Exception {
         Meal updated = MealTestData.getUpdated();
-        perform(doPut(MEAL1_ID).jsonBody(updated).basicAuth(USER))
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated))
+                .with(userHttpBasic(USER)))
                 .andExpect(status().isNoContent());
 
-        MEAL_MATCHERS.assertMatch(mealService.get(MEAL1_ID, START_SEQ), updated);
+        MEAL_MATCHER.assertMatch(mealService.get(MEAL1_ID, START_SEQ), updated);
     }
 
     @Test
     void createWithLocation() throws Exception {
         Meal newMeal = MealTestData.getNew();
-        ResultActions action = perform(doPost().jsonBody(newMeal).basicAuth(USER));
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newMeal))
+                .with(userHttpBasic(USER)));
 
         Meal created = readFromJson(action, Meal.class);
-        Integer newId = created.getId();
+        int newId = created.id();
         newMeal.setId(newId);
-        MEAL_MATCHERS.assertMatch(created, newMeal);
-        MEAL_MATCHERS.assertMatch(mealService.get(newId, USER_ID), newMeal);
+        MEAL_MATCHER.assertMatch(created, newMeal);
+        MEAL_MATCHER.assertMatch(mealService.get(newId, USER_ID), newMeal);
     }
 
     @Test
     void getAll() throws Exception {
-        perform(doGet().basicAuth(USER))
+        perform(MockMvcRequestBuilders.get(REST_URL)
+                .with(userHttpBasic(USER)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHERS.contentJson(getTos(MEALS, USER.getCaloriesPerDay())));
+                .andExpect(MEAL_TO_MATCHER.contentJson(getTos(MEALS, USER.getCaloriesPerDay())));
     }
 
     @Test
     void filter() throws Exception {
-        perform(doGet("filter").basicAuth(USER).unwrap()
-                .param("startDate", "2015-05-30").param("startTime", "07:00")
-                .param("endDate", "2015-05-31").param("endTime", "11:00"))
-                .andExpect(status().isOk())
+        perform(MockMvcRequestBuilders.get(REST_URL + "filter")
+                .param("startDate", "2020-01-30").param("startTime", "07:00")
+                .param("endDate", "2020-01-31").param("endTime", "11:00")
+                .with(userHttpBasic(USER)))
                 .andDo(print())
-                .andExpect(MEAL_TO_MATCHERS.contentJson(createTo(MEAL5, true), createTo(MEAL1, false)));
+                .andExpect(status().isOk())
+                .andExpect(MEAL_TO_MATCHER.contentJson(createTo(MEAL5, true), createTo(MEAL1, false)));
     }
 
     @Test
     void filterAll() throws Exception {
-        perform(doGet("filter?startDate=&endTime=").basicAuth(USER))
+        perform(MockMvcRequestBuilders.get(REST_URL + "filter?startDate=&endTime=")
+                .with(userHttpBasic(USER)))
                 .andExpect(status().isOk())
-                .andExpect(MEAL_TO_MATCHERS.contentJson(getTos(MEALS, USER.getCaloriesPerDay())));
+                .andExpect(MEAL_TO_MATCHER.contentJson(getTos(MEALS, USER.getCaloriesPerDay())));
     }
 
     @Test
     void createInvalid() throws Exception {
         Meal invalid = new Meal(null, null, "Dummy", 200);
-        perform(doPost().jsonBody(invalid).basicAuth(ADMIN))
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid))
+                .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(errorType(VALIDATION_ERROR))
@@ -134,7 +148,10 @@ class MealRestControllerTest extends AbstractControllerTest {
     @Test
     void updateInvalid() throws Exception {
         Meal invalid = new Meal(MEAL1_ID, null, null, 6000);
-        perform(doPut(MEAL1_ID).jsonBody(invalid).basicAuth(USER))
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid))
+                .with(userHttpBasic(USER)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(errorType(VALIDATION_ERROR))
@@ -146,7 +163,10 @@ class MealRestControllerTest extends AbstractControllerTest {
     void updateDuplicate() throws Exception {
         Meal invalid = new Meal(MEAL1_ID, MEAL2.getDateTime(), "Dummy", 200);
 
-        perform(doPut(MEAL1_ID).jsonBody(invalid).basicAuth(USER))
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid))
+                .with(userHttpBasic(USER)))
                 .andDo(print())
                 .andExpect(status().isConflict())
                 .andExpect(errorType(VALIDATION_ERROR))
@@ -157,7 +177,10 @@ class MealRestControllerTest extends AbstractControllerTest {
     @Transactional(propagation = Propagation.NEVER)
     void createDuplicate() throws Exception {
         Meal invalid = new Meal(null, ADMIN_MEAL1.getDateTime(), "Dummy", 200);
-        perform(doPost().jsonBody(invalid).basicAuth(ADMIN))
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid))
+                .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isConflict())
                 .andExpect(errorType(VALIDATION_ERROR))
@@ -167,7 +190,10 @@ class MealRestControllerTest extends AbstractControllerTest {
     @Test
     void updateHtmlUnsafe() throws Exception {
         Meal invalid = new Meal(MEAL1_ID, LocalDateTime.now(), "<script>alert(123)</script>", 200);
-        perform(doPut(MEAL1_ID).jsonBody(invalid).basicAuth(USER))
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid))
+                .with(userHttpBasic(USER)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(errorType(VALIDATION_ERROR))

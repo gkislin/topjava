@@ -13,9 +13,17 @@ public class DateTimeUtil {
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm";
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
 
-    // HSQLDB doesn't support LocalDate.MIN/MAX
+    // DB doesn't support LocalDate.MIN/MAX
     private static final LocalDateTime MIN_DATE = LocalDateTime.of(1, 1, 1, 0, 0);
     private static final LocalDateTime MAX_DATE = LocalDateTime.of(3000, 1, 1, 0, 0);
+
+    public static LocalDateTime atStartOfDayOrMin(LocalDate localDate) {
+        return localDate != null ? localDate.atStartOfDay() : MIN_DATE;
+    }
+
+    public static LocalDateTime atStartOfNextDayOrMax(LocalDate localDate) {
+        return localDate != null ? localDate.plus(1, ChronoUnit.DAYS).atStartOfDay() : MAX_DATE;
+    }
 
     private DateTimeUtil() {
     }
@@ -31,13 +39,4 @@ public class DateTimeUtil {
     public static @Nullable LocalTime parseLocalTime(@Nullable String str) {
         return StringUtils.isEmpty(str) ? null : LocalTime.parse(str);
     }
-
-    public static LocalDateTime getStartInclusive(LocalDate localDate) {
-        return localDate != null ? localDate.atStartOfDay() : MIN_DATE;
-    }
-
-    public static LocalDateTime getEndExclusive(LocalDate localDate) {
-        return localDate != null ? localDate.plus(1, ChronoUnit.DAYS).atStartOfDay() : MAX_DATE;
-    }
 }
-
