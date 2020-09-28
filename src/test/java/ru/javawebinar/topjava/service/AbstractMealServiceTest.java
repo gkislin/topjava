@@ -1,10 +1,8 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -23,33 +21,28 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Autowired
     protected MealService service;
-    @Autowired
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    private MealRepository repository;
 
     @Test
     void delete() throws Exception {
         service.delete(MEAL1_ID, USER_ID);
-        Assertions.assertNull(repository.get(MEAL1_ID, USER_ID));
+        assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, USER_ID));
     }
 
     @Test
     void deleteNotFound() throws Exception {
-        assertThrows(NotFoundException.class,
-                () -> service.delete(1, USER_ID));
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, USER_ID));
     }
 
     @Test
     void deleteNotOwn() throws Exception {
-        assertThrows(NotFoundException.class,
-                () -> service.delete(MEAL1_ID, ADMIN_ID));
+        assertThrows(NotFoundException.class, () -> service.delete(MEAL1_ID, ADMIN_ID));
     }
 
     @Test
     void create() throws Exception {
-        Meal newMeal = getNew();
-        Meal created = service.create(newMeal, USER_ID);
+        Meal created = service.create(getNew(), USER_ID);
         int newId = created.id();
+        Meal newMeal = getNew();
         newMeal.setId(newId);
         MEAL_MATCHER.assertMatch(created, newMeal);
         MEAL_MATCHER.assertMatch(service.get(newId, USER_ID), newMeal);
@@ -63,28 +56,25 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     void getNotFound() throws Exception {
-        assertThrows(NotFoundException.class,
-                () -> service.get(MEAL1_ID, ADMIN_ID));
+        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND, USER_ID));
     }
 
     @Test
     void getNotOwn() throws Exception {
-        assertThrows(NotFoundException.class,
-                () -> service.get(MEAL1_ID, ADMIN_ID));
+        assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, ADMIN_ID));
     }
 
     @Test
     void update() throws Exception {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
-        MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), updated);
+        MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), getUpdated());
     }
 
     @Test
-    void updateNotFound() throws Exception {
-        NotFoundException ex = assertThrows(NotFoundException.class,
-                () -> service.update(MEAL1, ADMIN_ID));
-        String msg = ex.getMessage();
+    void updateNotOwn() throws Exception {
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> service.update(MEAL1, ADMIN_ID));
+        String msg = exception.getMessage();
         assertTrue(msg.contains(ErrorType.DATA_NOT_FOUND.name()));
         assertTrue(msg.contains(NotFoundException.NOT_FOUND_EXCEPTION));
         assertTrue(msg.contains(String.valueOf(MEAL1_ID)));

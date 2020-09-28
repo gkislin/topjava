@@ -49,8 +49,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL + 1)
                 .with(userHttpBasic(ADMIN)))
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity())
-                .andDo(print());
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
@@ -94,19 +93,20 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void update() throws Exception {
-        User updated = UserTestData.getUpdated();
+        User updated = getUpdated();
+        updated.setId(null);
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN))
                 .content(UserTestData.jsonWithPassword(updated, "newPass")))
                 .andExpect(status().isNoContent());
 
-        USER_MATCHER.assertMatch(userService.get(USER_ID), updated);
+        USER_MATCHER.assertMatch(userService.get(USER_ID), getUpdated());
     }
 
     @Test
     void createWithLocation() throws Exception {
-        User newUser = UserTestData.getNew();
+        User newUser = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN))
@@ -142,6 +142,17 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getWithMeals() throws Exception {
+        assumeDataJpa();
+        perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID + "/with-meals")
+                .with(userHttpBasic(ADMIN)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(USER_WITH_MEALS_MATCHER.contentJson(ADMIN));
+    }
+
+    @Test
     void createInvalid() throws Exception {
         User expected = new User(null, null, "", "newPass", 7300, Role.USER, Role.ADMIN);
         perform(MockMvcRequestBuilders.post(REST_URL)
@@ -163,8 +174,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isUnprocessableEntity())
                 .andDo(print())
-                .andExpect(errorType(VALIDATION_ERROR))
-                .andDo(print());
+                .andExpect(errorType(VALIDATION_ERROR));
     }
 
     @Test
@@ -192,8 +202,6 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .content(jsonWithPassword(expected, "newPass")))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(errorType(VALIDATION_ERROR))
-                .andExpect(detailMessage(EXCEPTION_DUPLICATE_EMAIL))
-                .andDo(print());
-
+                .andExpect(detailMessage(EXCEPTION_DUPLICATE_EMAIL));
     }
 }

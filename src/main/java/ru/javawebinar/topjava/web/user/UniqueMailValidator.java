@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.web.user;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import ru.javawebinar.topjava.HasIdAndEmail;
@@ -13,8 +12,11 @@ import ru.javawebinar.topjava.web.ExceptionInfoHandler;
 @Component
 public class UniqueMailValidator implements org.springframework.validation.Validator {
 
-    @Autowired
-    private UserRepository repository;
+    private final UserRepository repository;
+
+    public UniqueMailValidator(UserRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public boolean supports(Class<?> clazz) {

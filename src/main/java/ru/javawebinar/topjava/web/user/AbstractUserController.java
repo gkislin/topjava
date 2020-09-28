@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import ru.javawebinar.topjava.HasId;
 import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.model.User;
@@ -22,8 +24,11 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 public abstract class AbstractUserController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
+    // Validate manually cause UniqueMailValidator doesn't work for update with user.id==null
+    private WebDataBinder binder;
+
     @Autowired
-    private UserService service;
+    protected UserService service;
 
     @Autowired
     private UniqueMailValidator emailValidator;
@@ -38,7 +43,10 @@ public abstract class AbstractUserController {
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
-        binder.addValidators(emailValidator);
+        if (binder.getTarget() != null && emailValidator.supports(binder.getTarget().getClass())) {
+            binder.addValidators(emailValidator);
+            this.binder = binder;
+        }
     }
 
     public List<User> getAll() {
@@ -68,11 +76,14 @@ public abstract class AbstractUserController {
         service.delete(id);
     }
 
-    public void update(User user, int id) {
+    protected void checkAndValidateForUpdate(HasId user, int id) throws BindException {
         log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);
         checkModificationAllowed(id);
-        service.update(user);
+        binder.validate();
+        if (binder.getBindingResult().hasErrors()) {
+            throw new BindException(binder.getBindingResult());
+        }
     }
 
     public void update(UserTo userTo, int id) {
@@ -91,6 +102,11 @@ public abstract class AbstractUserController {
         log.info(enabled ? "enable {}" : "disable {}", id);
         checkModificationAllowed(id);
         service.enable(id, enabled);
+    }
+
+    public User getWithMeals(int id) {
+        log.info("getWithMeals {}", id);
+        return service.getWithMeals(id);
     }
 
     private void checkModificationAllowed(int id) {

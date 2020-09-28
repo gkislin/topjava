@@ -3,54 +3,57 @@ package ru.javawebinar.topjava;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javawebinar.topjava.TestUtil.readListFromJsonMvcResult;
 
 public class TestMatcher<T> {
     private final Class<T> clazz;
-    private final String[] fieldsToIgnore;
-    private final boolean usingEquals;
+    private final BiConsumer<T, T> assertion;
+    private final BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion;
 
-    private TestMatcher(Class<T> clazz, boolean usingEquals, String... fieldsToIgnore) {
+    private TestMatcher(Class<T> clazz, BiConsumer<T, T> assertion, BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion) {
         this.clazz = clazz;
-        this.fieldsToIgnore = fieldsToIgnore;
-        this.usingEquals = usingEquals;
+        this.assertion = assertion;
+        this.iterableAssertion = iterableAssertion;
     }
 
-    public static <T> TestMatcher<T> usingEquals(Class<T> clazz) {
-        return new TestMatcher<>(clazz, true);
+    public static <T> TestMatcher<T> usingAssertions(Class<T> clazz, BiConsumer<T, T> assertion, BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion) {
+        return new TestMatcher<>(clazz, assertion, iterableAssertion);
     }
 
-    public static <T> TestMatcher<T> usingFieldsComparator(Class<T> clazz, String... fieldsToIgnore) {
-        return new TestMatcher<>(clazz, false, fieldsToIgnore);
+    public static <T> TestMatcher<T> usingEqualsAssertions(Class<T> clazz) {
+        return usingAssertions(clazz,
+                (a, e) -> assertThat(a).isEqualTo(e),
+                (a, e) -> assertThat(a).isEqualTo(e));
+    }
+
+    public static <T> TestMatcher<T> usingFieldsWithIgnoringAssertions(Class<T> clazz, String... fieldsToIgnore) {
+        return usingAssertions(clazz,
+                (a, e) -> assertThat(a).isEqualToIgnoringGivenFields(e, fieldsToIgnore),
+                (a, e) -> assertThat(a).usingElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(e));
     }
 
     public void assertMatch(T actual, T expected) {
-        if (usingEquals) {
-            assertThat(actual).isEqualTo(expected);
-        } else {
-            assertThat(actual).isEqualToIgnoringGivenFields(expected, fieldsToIgnore);
-        }
+        assertion.accept(actual, expected);
     }
 
-    public void assertMatch(Iterable<T> actual, T... expected) {
+    @SafeVarargs
+    public final void assertMatch(Iterable<T> actual, T... expected) {
         assertMatch(actual, List.of(expected));
     }
 
     public void assertMatch(Iterable<T> actual, Iterable<T> expected) {
-        if (usingEquals) {
-            assertThat(actual).isEqualTo(expected);
-        } else {
-            assertThat(actual).usingElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(expected);
-        }
+        iterableAssertion.accept(actual, expected);
     }
 
     public ResultMatcher contentJson(T expected) {
         return result -> assertMatch(TestUtil.readFromJsonMvcResult(result, clazz), expected);
     }
 
-    public ResultMatcher contentJson(T... expected) {
+    @SafeVarargs
+    public final ResultMatcher contentJson(T... expected) {
         return contentJson(List.of(expected));
     }
 

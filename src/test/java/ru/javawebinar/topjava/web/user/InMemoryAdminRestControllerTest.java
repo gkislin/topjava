@@ -10,6 +10,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Arrays;
 
+import static ru.javawebinar.topjava.UserTestData.NOT_FOUND;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 class InMemoryAdminRestControllerTest {
@@ -35,7 +36,7 @@ class InMemoryAdminRestControllerTest {
     }
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setup() throws Exception {
         // re-initialize
         repository.init();
     }
@@ -47,7 +48,7 @@ class InMemoryAdminRestControllerTest {
     }
 
     @Test
-    void deleteNotFound() throws Exception {
-        Assertions.assertThrows(NotFoundException.class, () -> controller.delete(10));
+    public void deleteNotFound() throws Exception {
+        Assertions.assertThrows(NotFoundException.class, () -> controller.delete(NOT_FOUND));
     }
 }

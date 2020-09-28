@@ -22,8 +22,8 @@ import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 abstract public class AbstractServiceTest {
 
     //  Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778
-    public <T extends Throwable> void validateRootCause(Runnable runnable, Class<T> exceptionClass) {
-        assertThrows(exceptionClass, () -> {
+    public <T extends Throwable> void validateRootCause(Runnable runnable, Class<T> rootExceptionClass) {
+        assertThrows(rootExceptionClass, () -> {
             try {
                 runnable.run();
             } catch (Exception e) {

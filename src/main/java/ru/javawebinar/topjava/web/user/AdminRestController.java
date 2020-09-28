@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web.user;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -45,11 +46,11 @@ public class AdminRestController extends AbstractUserController {
         super.delete(id);
     }
 
-    @Override
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@Validated(View.Web.class) @RequestBody User user, @PathVariable int id) {
-        super.update(user, id);
+    public void update(@RequestBody User user, @PathVariable int id) throws BindException {
+        checkAndValidateForUpdate(user, id);
+        service.update(user);
     }
 
     @GetMapping("/by")
@@ -62,5 +63,10 @@ public class AdminRestController extends AbstractUserController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void enable(@PathVariable int id, @RequestParam boolean enabled) {
         super.enable(id, enabled);
+    }
+
+    @GetMapping("/{id}/with-meals")
+    public User getWithMeals(@PathVariable int id) {
+        return super.getWithMeals(id);
     }
 }

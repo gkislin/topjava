@@ -1,4 +1,4 @@
-var userAjaxUrl = "ajax/admin/users/";
+var userAjaxUrl = "admin/users/";
 
 function enable(chkbox, id) {
     var enabled = chkbox.is(":checked");
@@ -17,69 +17,64 @@ function enable(chkbox, id) {
 
 // $(document).ready(function () {
 $(function () {
-    makeEditable({
-            ajaxUrl: userAjaxUrl,
-            datatableOpts: {
-                "columns": [
-                    {
-                        "data": "name"
-                    },
-                    {
-                        "data": "email",
-                        "render": function (data, type, row) {
-                            if (type === "display") {
-                                return "<a href='mailto:" + data + "'>" + data + "</a>";
-                            }
-                            return data;
-                        }
-                    },
-                    {
-                        "data": "roles"
-                    },
-                    {
-                        "data": "enabled",
-                        "render": function (data, type, row) {
-                            if (type === "display") {
-                                return "<input type='checkbox' " + (data ? "checked" : "") + " onclick='enable($(this)," + row.id + ");'/>";
-                            }
-                            return data;
-                        }
-                    },
-                    {
-                        "data": "registered",
-                        "render": function (date, type, row) {
-                            if (type === "display") {
-                                return date.substring(0, 10);
-                            }
-                            return date;
-                        }
-                    },
-                    {
-                        "orderable": false,
-                        "defaultContent": "",
-                        "render": renderEditBtn
-                    },
-                    {
-                        "orderable": false,
-                        "defaultContent": "",
-                        "render": renderDeleteBtn
+    makeEditable(userAjaxUrl, {
+        "columns": [
+            {
+                "data": "name"
+            },
+            {
+                "data": "email",
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        return "<a href='mailto:" + data + "'>" + data + "</a>";
                     }
-                ],
-                "order": [
-                    [
-                        0,
-                        "asc"
-                    ]
-                ],
-                "createdRow": function (row, data, dataIndex) {
-                    if (!data.enabled) {
-                        $(row).attr("data-userEnabled", false);
-                    }
+                    return data;
                 }
             },
-            updateTable: function () {
-                $.get(userAjaxUrl, updateTableByData);
+            {
+                "data": "roles"
+            },
+            {
+                "data": "enabled",
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        return "<input type='checkbox' " + (data ? "checked" : "") + " onclick='enable($(this)," + row.id + ");'/>";
+                    }
+                    return data;
+                }
+            },
+            {
+                "data": "registered",
+                "render": function (date, type, row) {
+                    if (type === "display") {
+                        return date.substring(0, 10);
+                    }
+                    return date;
+                }
+            },
+            {
+                "orderable": false,
+                "defaultContent": "",
+                "render": renderEditBtn
+            },
+            {
+                "orderable": false,
+                "defaultContent": "",
+                "render": renderDeleteBtn
+            }
+        ],
+        "order": [
+            [
+                0,
+                "asc"
+            ]
+        ],
+        "createdRow": function (row, data, dataIndex) {
+            if (!data.enabled) {
+                $(row).attr("data-userEnabled", false);
             }
         }
-    );
+    }, function () {
+        $.get(userAjaxUrl, updateTableByData);
+    });
 });
