@@ -1,7 +1,9 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -23,23 +25,23 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     protected MealService service;
 
     @Test
-    void delete() throws Exception {
+    void delete() {
         service.delete(MEAL1_ID, USER_ID);
         assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, USER_ID));
     }
 
     @Test
-    void deleteNotFound() throws Exception {
+    void deleteNotFound() {
         assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, USER_ID));
     }
 
     @Test
-    void deleteNotOwn() throws Exception {
+    void deleteNotOwn() {
         assertThrows(NotFoundException.class, () -> service.delete(MEAL1_ID, ADMIN_ID));
     }
 
     @Test
-    void create() throws Exception {
+    void create() {
         Meal created = service.create(getNew(), USER_ID);
         int newId = created.id();
         Meal newMeal = getNew();
@@ -49,57 +51,64 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void get() throws Exception {
-        Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
-        MEAL_MATCHER.assertMatch(actual, ADMIN_MEAL1);
+    void duplicateDateTimeCreate() {
+        assertThrows(DataAccessException.class, () ->
+                service.create(new Meal(null, meal1.getDateTime(), "duplicate", 100), USER_ID));
     }
 
     @Test
-    void getNotFound() throws Exception {
+    void get() {
+        Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
+        MEAL_MATCHER.assertMatch(actual, adminMeal1);
+    }
+
+    @Test
+    void getNotFound() {
         assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND, USER_ID));
     }
 
     @Test
-    void getNotOwn() throws Exception {
+    void getNotOwn() {
         assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, ADMIN_ID));
     }
 
     @Test
-    void update() throws Exception {
+    void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
         MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), getUpdated());
     }
 
     @Test
-    void updateNotOwn() throws Exception {
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> service.update(MEAL1, ADMIN_ID));
+    void updateNotOwn() {
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> service.update(meal1, ADMIN_ID));
         String msg = exception.getMessage();
         assertTrue(msg.contains(ErrorType.DATA_NOT_FOUND.name()));
         assertTrue(msg.contains(NotFoundException.NOT_FOUND_EXCEPTION));
         assertTrue(msg.contains(String.valueOf(MEAL1_ID)));
+        MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), meal1);
     }
 
     @Test
-    void getAll() throws Exception {
-        MEAL_MATCHER.assertMatch(service.getAll(USER_ID), MEALS);
+    void getAll() {
+        MEAL_MATCHER.assertMatch(service.getAll(USER_ID), meals);
     }
 
     @Test
-    void getBetweenInclusive() throws Exception {
+    void getBetweenInclusive() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(
                 LocalDate.of(2020, Month.JANUARY, 30),
                 LocalDate.of(2020, Month.JANUARY, 30), USER_ID),
-                MEAL3, MEAL2, MEAL1);
+                meal3, meal2, meal1);
     }
 
     @Test
-    void getBetweenWithNullDates() throws Exception {
-        MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), MEALS);
+    void getBetweenWithNullDates() {
+        MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), meals);
     }
 
     @Test
-    void createWithException() throws Exception {
+    void createWithException() {
         validateRootCause(() -> service.create(new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "  ", 300), USER_ID), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new Meal(null, null, "Description", 300), USER_ID), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "Description", 9), USER_ID), ConstraintViolationException.class);

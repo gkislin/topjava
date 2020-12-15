@@ -1,4 +1,4 @@
-### curl samples (application deployed in application context `topjava`).
+### curl samples (application deployed at application context `topjava`).
 > For windows use `Git Bash`
 
 #### get All Users

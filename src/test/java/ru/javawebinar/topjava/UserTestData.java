@@ -13,25 +13,27 @@ import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class UserTestData {
-    public static TestMatcher<User> USER_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(User.class, "registered", "meals", "password");
+    public static final TestMatcher<User> USER_MATCHER = TestMatcher.usingIgnoringFieldsComparator(User.class, "registered", "meals", "password");
+
     public static TestMatcher<User> USER_WITH_MEALS_MATCHER =
             TestMatcher.usingAssertions(User.class,
+//     No need use ignoringAllOverriddenEquals, see https://assertj.github.io/doc/#breaking-changes
                     (a, e) -> assertThat(a).usingRecursiveComparison()
-                            .ignoringFields("registered", "meals.user", "password").ignoringAllOverriddenEquals().isEqualTo(e),
+                            .ignoringFields("registered", "meals.user", "password").isEqualTo(e),
                     (a, e) -> {
                         throw new UnsupportedOperationException();
                     });
 
-    public static final int NOT_FOUND = 10;
     public static final int USER_ID = START_SEQ;
     public static final int ADMIN_ID = START_SEQ + 1;
+    public static final int NOT_FOUND = 10;
 
-    public static final User USER = new User(USER_ID, "User", "user@yandex.ru", "password", 2005, Role.USER);
-    public static final User ADMIN = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", 1900, Role.ADMIN, Role.USER);
+    public static final User user = new User(USER_ID, "User", "user@yandex.ru", "password", 2005, Role.USER);
+    public static final User admin = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", 1900, Role.ADMIN, Role.USER);
 
     static {
-        USER.setMeals(MEALS);
-        ADMIN.setMeals(List.of(ADMIN_MEAL2, ADMIN_MEAL1));
+        user.setMeals(meals);
+        admin.setMeals(List.of(adminMeal2, adminMeal1));
     }
 
     public static User getNew() {
@@ -39,9 +41,12 @@ public class UserTestData {
     }
 
     public static User getUpdated() {
-        User updated = new User(USER);
+        User updated = new User(user);
+        updated.setEmail("update@gmail.com");
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
+        updated.setPassword("newPass");
+        updated.setEnabled(false);
         updated.setRoles(Collections.singletonList(Role.ADMIN));
         return updated;
     }

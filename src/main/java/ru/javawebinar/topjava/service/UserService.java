@@ -70,7 +70,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void update(UserTo userTo) {
         User user = get(userTo.id());
-        prepareAndSave(UserUtil.updateFromTo(user, userTo));   // !! need only for JDBC implementation
+        prepareAndSave(UserUtil.updateFromTo(user, userTo));
     }
 
     @CacheEvict(value = "users", allEntries = true)

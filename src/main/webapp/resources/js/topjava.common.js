@@ -1,13 +1,12 @@
-var ajaxUrl, datatableApi, updateTable, form;
+var form;
 
-function makeEditable(aUrl, datatableOpts, upTable) {
-    ajaxUrl = aUrl;
-    datatableApi = $("#datatable").DataTable(
+function makeEditable(datatableOpts) {
+    ctx.datatableApi = $("#datatable").DataTable(
         // https://api.jquery.com/jquery.extend/#jQuery-extend-deep-target-object1-objectN
         $.extend(true, datatableOpts,
             {
                 "ajax": {
-                    "url": ajaxUrl,
+                    "url": ctx.ajaxUrl,
                     "dataSrc": ""
                 },
                 "paging": false,
@@ -17,7 +16,7 @@ function makeEditable(aUrl, datatableOpts, upTable) {
                 }
             }
         ));
-    updateTable = upTable;
+
     form = $('#detailsForm');
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(jqXHR);
@@ -40,9 +39,9 @@ function add() {
 }
 
 function updateRow(id) {
-    $("#modalTitle").html(i18n["editTitle"]);
     form.find(":input").val("");
-    $.get(ajaxUrl + id, function (data) {
+    $("#modalTitle").html(i18n["editTitle"]);
+    $.get(ctx.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
             form.find("input[name='" + key + "']").val(value);
         });
@@ -53,27 +52,27 @@ function updateRow(id) {
 function deleteRow(id) {
     if (confirm(i18n['common.confirm'])) {
         $.ajax({
-            url: ajaxUrl + id,
+            url: ctx.ajaxUrl + id,
             type: "DELETE"
         }).done(function () {
-            updateTable();
+            ctx.updateTable();
             successNoty("common.deleted");
         });
     }
 }
 
 function updateTableByData(data) {
-    datatableApi.clear().rows.add(data).draw();
+    ctx.datatableApi.clear().rows.add(data).draw();
 }
 
 function save() {
     $.ajax({
         type: "POST",
-        url: ajaxUrl,
+        url: ctx.ajaxUrl,
         data: form.serialize()
     }).done(function () {
         $("#editRow").modal("hide");
-        updateTable();
+        ctx.updateTable();
         successNoty("common.saved");
     });
 }
@@ -99,7 +98,7 @@ function successNoty(key) {
 
 function failNoty(jqXHR) {
     closeNoty();
-    var errorInfo = JSON.parse(jqXHR.responseText);
+    var errorInfo = jqXHR.responseJSON;
     failedNote = new Noty({
         text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.typeMessage + "<br>" + errorInfo.details.join("<br>"),
         type: "error",

@@ -45,7 +45,7 @@ class HerokuRestControllerTest extends AbstractControllerTest {
     @Test
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + USER_ID)
-                .with(userHttpBasic(ADMIN)))
+                .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(errorType(ErrorType.VALIDATION_ERROR))
                 .andExpect(detailMessage(EXCEPTION_MODIFICATION_RESTRICTION))
@@ -56,8 +56,8 @@ class HerokuRestControllerTest extends AbstractControllerTest {
     void update() throws Exception {
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(ADMIN))
-                .content(UserTestData.jsonWithPassword(USER, "password")))
+                .with(userHttpBasic(admin))
+                .content(UserTestData.jsonWithPassword(user, "password")))
                 .andExpect(errorType(ErrorType.VALIDATION_ERROR))
                 .andExpect(detailMessage(EXCEPTION_MODIFICATION_RESTRICTION))
                 .andExpect(status().isUnprocessableEntity());

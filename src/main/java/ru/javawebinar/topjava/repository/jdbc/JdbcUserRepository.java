@@ -51,9 +51,10 @@ public class JdbcUserRepository implements UserRepository {
             user.setId(newKey.intValue());
             insertRoles(user);
         } else {
-            if (namedParameterJdbcTemplate.update(
-                    "UPDATE users SET name=:name, email=:email, password=:password, " +
-                            "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0) {
+            if (namedParameterJdbcTemplate.update("""
+                       UPDATE users SET name=:name, email=:email, password=:password, 
+                       registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
+                    """, parameterSource) == 0) {
                 return null;
             }
             // Simplest implementation.
@@ -86,12 +87,13 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public List<User> getAll() {
+        List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+
         Map<Integer, Set<Role>> map = new HashMap<>();
         jdbcTemplate.query("SELECT * FROM user_roles", rs -> {
             map.computeIfAbsent(rs.getInt("user_id"), userId -> EnumSet.noneOf(Role.class))
                     .add(Role.valueOf(rs.getString("role")));
         });
-        List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
         users.forEach(u -> u.setRoles(map.get(u.getId())));
         return users;
     }
@@ -101,7 +103,7 @@ public class JdbcUserRepository implements UserRepository {
         if (!CollectionUtils.isEmpty(roles)) {
             jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role) VALUES (?, ?)", roles, roles.size(),
                     (ps, role) -> {
-                        ps.setInt(1, u.getId());
+                        ps.setInt(1, u.id());
                         ps.setString(2, role.name());
                     });
         }

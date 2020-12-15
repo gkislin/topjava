@@ -9,11 +9,7 @@
 <spring:bind path="${name}">
     <div class="form-group ${status.error ? 'error' : '' }">
         <label class="col-form-label"><spring:message code="${labelCode}"/></label>
-        <c:choose>
-            <c:when test="${inputType == 'password'}"><form:password path="${name}" class="form-control is-invalid"/></c:when>
-            <c:when test="${inputType == 'number'}"><form:input path="${name}" type="number" class="form-control is-invalid"/></c:when>
-            <c:otherwise><form:input path="${name}" class="form-control is-invalid"/></c:otherwise>
-        </c:choose>
+        <form:input path="${name}" type="${(empty inputType)?'text':inputType}" class="form-control ${status.error ? 'is-invalid' : '' }"/>
         <div class="invalid-feedback">${status.errorMessage}</div>
     </div>
 </spring:bind>

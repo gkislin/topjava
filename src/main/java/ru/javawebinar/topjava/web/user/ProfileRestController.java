@@ -15,11 +15,11 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping(ProfileRestController.REST_URL)
+@RequestMapping(value = ProfileRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProfileRestController extends AbstractUserController {
     static final String REST_URL = "/rest/profile";
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public User get(@AuthenticationPrincipal AuthorizedUser authUser) {
         return super.get(authUser.getId());
     }
@@ -31,7 +31,7 @@ public class ProfileRestController extends AbstractUserController {
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
         User created = super.create(userTo);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -46,7 +46,7 @@ public class ProfileRestController extends AbstractUserController {
         service.update(userTo);
     }
 
-    @GetMapping(value = "/text")
+    @GetMapping("/text")
     public String testUTF() {
         return "Русский текст";
     }

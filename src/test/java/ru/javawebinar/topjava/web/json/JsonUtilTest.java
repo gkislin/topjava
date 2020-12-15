@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.web.json;
 
 import org.junit.jupiter.api.Test;
+import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
@@ -16,27 +17,27 @@ import static ru.javawebinar.topjava.MealTestData.*;
 class JsonUtilTest {
 
     @Test
-    void readWriteValue() throws Exception {
-        String json = JsonUtil.writeValue(ADMIN_MEAL1);
+    void readWriteValue() {
+        String json = JsonUtil.writeValue(adminMeal1);
         System.out.println(json);
         Meal meal = JsonUtil.readValue(json, Meal.class);
-        MEAL_MATCHER.assertMatch(meal, ADMIN_MEAL1);
+        MEAL_MATCHER.assertMatch(meal, adminMeal1);
     }
 
     @Test
-    void readWriteValues() throws Exception {
-        String json = JsonUtil.writeValue(MEALS);
+    void readWriteValues() {
+        String json = JsonUtil.writeValue(meals);
         System.out.println(json);
         List<Meal> meals = JsonUtil.readValues(json, Meal.class);
-        MEAL_MATCHER.assertMatch(meals, MEALS);
+        MEAL_MATCHER.assertMatch(meals, MealTestData.meals);
     }
 
     @Test
     void writeOnlyAccess() throws Exception {
-        String json = JsonUtil.writeValue(UserTestData.USER);
+        String json = JsonUtil.writeValue(UserTestData.user);
         System.out.println(json);
         assertThat(json, not(containsString("password")));
-        String jsonWithPass = UserTestData.jsonWithPassword(UserTestData.USER, "newPass");
+        String jsonWithPass = UserTestData.jsonWithPassword(UserTestData.user, "newPass");
         System.out.println(jsonWithPass);
         User user = JsonUtil.readValue(jsonWithPass, User.class);
         assertEquals(user.getPassword(), "newPass");

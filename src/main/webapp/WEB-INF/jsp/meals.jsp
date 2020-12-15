@@ -17,7 +17,7 @@
             <div class="card-body pb-0">
                 <form id="filter">
                     <div class="row">
-                        <div class="offset-1 col-2">
+                        <div class="col-2">
                             <label for="startDate"><spring:message code="meal.startDate"/></label>
                             <input class="form-control" name="startDate" id="startDate" autocomplete="off">
                         </div>
@@ -25,11 +25,11 @@
                             <label for="endDate"><spring:message code="meal.endDate"/></label>
                             <input class="form-control" name="endDate" id="endDate" autocomplete="off">
                         </div>
-                        <div class="offset-2 col-2">
+                        <div class="offset-2 col-3">
                             <label for="startTime"><spring:message code="meal.startTime"/></label>
                             <input class="form-control" name="startTime" id="startTime" autocomplete="off">
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <label for="endTime"><spring:message code="meal.endTime"/></label>
                             <input class="form-control" name="endTime" id="endTime" autocomplete="off">
                         </div>
@@ -41,7 +41,7 @@
                     <span class="fa fa-remove"></span>
                     <spring:message code="common.cancel"/>
                 </button>
-                <button class="btn btn-primary" onclick="updateFilteredTable()">
+                <button class="btn btn-primary" onclick="ctx.updateTable()">
                     <span class="fa fa-filter"></span>
                     <spring:message code="meal.filter"/>
                 </button>

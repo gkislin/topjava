@@ -23,15 +23,15 @@ public class TestMatcher<T> {
         return new TestMatcher<>(clazz, assertion, iterableAssertion);
     }
 
-    public static <T> TestMatcher<T> usingEqualsAssertions(Class<T> clazz) {
-        return usingAssertions(clazz,
+    public static <T> TestMatcher<T> usingEqualsComparator(Class<T> clazz) {
+        return new TestMatcher<>(clazz,
                 (a, e) -> assertThat(a).isEqualTo(e),
                 (a, e) -> assertThat(a).isEqualTo(e));
     }
 
-    public static <T> TestMatcher<T> usingFieldsWithIgnoringAssertions(Class<T> clazz, String... fieldsToIgnore) {
-        return usingAssertions(clazz,
-                (a, e) -> assertThat(a).isEqualToIgnoringGivenFields(e, fieldsToIgnore),
+    public static <T> TestMatcher<T> usingIgnoringFieldsComparator(Class<T> clazz, String... fieldsToIgnore) {
+        return new TestMatcher<>(clazz,
+                (a, e) -> assertThat(a).usingRecursiveComparison().ignoringFields(fieldsToIgnore).isEqualTo(e),
                 (a, e) -> assertThat(a).usingElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(e));
     }
 
