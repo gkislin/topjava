@@ -31,7 +31,7 @@ public class ProfileUIController extends AbstractUserController {
             return "profile";
         }
         super.update(userTo, authUser.getId());
-        authUser.update(userTo);
+        authUser.setTo(userTo);
         status.setComplete();
         return "redirect:/meals";
     }
