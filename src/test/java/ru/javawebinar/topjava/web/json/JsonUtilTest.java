@@ -21,7 +21,7 @@ class JsonUtilTest {
         String json = JsonUtil.writeValue(adminMeal1);
         System.out.println(json);
         Meal meal = JsonUtil.readValue(json, Meal.class);
-        MEAL_MATCHER.assertMatch(meal, adminMeal1);
+        MATCHER.assertMatch(meal, adminMeal1);
     }
 
     @Test
@@ -29,11 +29,11 @@ class JsonUtilTest {
         String json = JsonUtil.writeValue(meals);
         System.out.println(json);
         List<Meal> meals = JsonUtil.readValues(json, Meal.class);
-        MEAL_MATCHER.assertMatch(meals, MealTestData.meals);
+        MATCHER.assertMatch(meals, MealTestData.meals);
     }
 
     @Test
-    void writeOnlyAccess() throws Exception {
+    void writeOnlyAccess() {
         String json = JsonUtil.writeValue(UserTestData.user);
         System.out.println(json);
         assertThat(json, not(containsString("password")));

@@ -14,7 +14,7 @@
             <div class="error">${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}</div>
         </c:if>
         <c:if test="${not empty param.message}">
-            <div class="message"><spring:message code="${param.message}"/></div>
+            <div class="message"><spring:message code="${param.message}" text=""/></div>
         </c:if>
         <sec:authorize access="isAnonymous()">
             <div class="pt-2">
@@ -41,13 +41,15 @@
             <a href="http://en.wikipedia.org/wiki/JavaServer_Pages_Standard_Tag_Library">JSTL</a>,
             <a href="http://tomcat.apache.org/">Apache Tomcat</a>,
             <a href="http://www.webjars.org/">WebJars</a>,
-            <a href="http://datatables.net/">DataTables plugin</a>,
+            <a href="http://datatables.net/">DataTables</a>,
             <a href="http://ehcache.org">EHCACHE</a>,
             <a href="http://www.postgresql.org/">PostgreSQL</a>,
-            <a href="http://junit.org/">JUnit</a>,
+            <a href="http://hsqldb.org/">HSQLDB</a>,
+            <a href="https://junit.org/junit5/">JUnit 5</a>,
             <a href="http://hamcrest.org/JavaHamcrest/">Hamcrest</a>,
+            <a href="https://assertj.github.io/doc/">AssertJ</a>,
             <a href="http://jquery.com/">jQuery</a>,
-            <a href="http://ned.im/noty/">jQuery notification</a>,
+            <a href="https://plugins.jquery.com/">jQuery plugins</a>,
             <a href="http://getbootstrap.com/">Bootstrap</a>.
         </div>
     </div>

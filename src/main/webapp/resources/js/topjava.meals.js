@@ -1,6 +1,7 @@
-var mealAjaxUrl = "profile/meals/";
+const mealAjaxUrl = "profile/meals/";
 
-var ctx = {
+// https://stackoverflow.com/a/5064235/548473
+const ctx = {
     ajaxUrl: mealAjaxUrl,
     updateTable: function () {
         $.ajax({
@@ -63,8 +64,8 @@ $(function () {
             ]
         ],
         "createdRow": function (row, data, dataIndex) {
-            $(row).attr("data-mealExcess", data.excess);
-        },
+            $(row).attr("data-meal-excess", data.excess);
+        }
     });
 
     $.datetimepicker.setLocale(localeCode);

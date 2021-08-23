@@ -13,10 +13,9 @@ import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class UserTestData {
-    public static final TestMatcher<User> USER_MATCHER = TestMatcher.usingIgnoringFieldsComparator(User.class, "registered", "meals", "password");
-
-    public static TestMatcher<User> USER_WITH_MEALS_MATCHER =
-            TestMatcher.usingAssertions(User.class,
+    public static final MatcherFactory.Matcher<User> MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "meals", "password");
+    public static MatcherFactory.Matcher<User> WITH_MEALS_MATCHER =
+            MatcherFactory.usingAssertions(User.class,
 //     No need use ignoringAllOverriddenEquals, see https://assertj.github.io/doc/#breaking-changes
                     (a, e) -> assertThat(a).usingRecursiveComparison()
                             .ignoringFields("registered", "meals.user", "password").isEqualTo(e),
@@ -42,7 +41,10 @@ public class UserTestData {
 
     public static User getUpdated() {
         User updated = new User(user);
-        updated.setEmail("update@gmail.com");
+
+// In case of update with user.id=null in body needs workaround
+// ValidationUtil.assureIdConsistent called after validation
+//      updated.setEmail("update@gmail.com");
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
         updated.setPassword("newPass");

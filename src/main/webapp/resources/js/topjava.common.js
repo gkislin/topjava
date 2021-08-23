@@ -1,4 +1,4 @@
-var form;
+let form;
 
 function makeEditable(datatableOpts) {
     ctx.datatableApi = $("#datatable").DataTable(
@@ -16,8 +16,8 @@ function makeEditable(datatableOpts) {
                 }
             }
         ));
-
     form = $('#detailsForm');
+
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(jqXHR);
     });
@@ -77,7 +77,7 @@ function save() {
     });
 }
 
-var failedNote;
+let failedNote;
 
 function closeNoty() {
     if (failedNote) {
@@ -96,16 +96,6 @@ function successNoty(key) {
     }).show();
 }
 
-function failNoty(jqXHR) {
-    closeNoty();
-    var errorInfo = jqXHR.responseJSON;
-    failedNote = new Noty({
-        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.typeMessage + "<br>" + errorInfo.details.join("<br>"),
-        type: "error",
-        layout: "bottomRight"
-    }).show();
-}
-
 function renderEditBtn(data, type, row) {
     if (type === "display") {
         return "<a onclick='updateRow(" + row.id + ");'><span class='fa fa-pencil'></span></a>";
@@ -116,4 +106,15 @@ function renderDeleteBtn(data, type, row) {
     if (type === "display") {
         return "<a onclick='deleteRow(" + row.id + ");'><span class='fa fa-remove'></span></a>";
     }
+}
+
+function failNoty(jqXHR) {
+    closeNoty();
+    var errorInfo = jqXHR.responseJSON;
+    failedNote = new Noty({
+        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.typeMessage + "<br>" + errorInfo.details.join("<br>"),
+        type: "error",
+        layout: "bottomRight"
+    });
+    failedNote.show()
 }

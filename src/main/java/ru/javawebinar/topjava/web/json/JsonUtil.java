@@ -42,7 +42,7 @@ public class JsonUtil {
     }
 
     public static <T> String writeAdditionProps(T obj, Map<String, Object> addProps) {
-        Map<String, Object> map = getMapper().convertValue(obj, new TypeReference<Map<String, Object>>() {});
+        Map<String, Object> map = getMapper().convertValue(obj, new TypeReference<>() {});
         map.putAll(addProps);
         return writeValue(map);
     }

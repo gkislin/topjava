@@ -24,6 +24,7 @@ import java.util.Locale;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+
 @SpringJUnitWebConfig(locations = {
         "classpath:spring/spring-app.xml",
         "classpath:spring/spring-mvc.xml",
@@ -37,12 +38,6 @@ public abstract class AbstractControllerTest {
     private static final Locale RU_LOCALE = new Locale("ru");
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
 
-    @Autowired
-    public Environment env;
-
-    @Autowired
-    protected MessageSourceAccessor messageSourceAccessor;
-
     static {
         CHARACTER_ENCODING_FILTER.setEncoding("UTF-8");
         CHARACTER_ENCODING_FILTER.setForceEncoding(true);
@@ -51,7 +46,13 @@ public abstract class AbstractControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
+    public Environment env;
+
+    @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    protected MessageSourceAccessor messageSourceAccessor;
 
     public void assumeDataJpa() {
         Assumptions.assumeTrue(env.acceptsProfiles(org.springframework.core.env.Profiles.of(Profiles.DATAJPA)), "DATA-JPA only");

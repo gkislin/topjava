@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.javawebinar</groupId>
@@ -12,43 +13,43 @@
     <url>http://topjava.herokuapp.com/</url>
 
     <properties>
-        <java.version>15</java.version>
+        <java.version>16</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <spring.version>5.3.0</spring.version>
-        <spring.security.version>5.4.1</spring.security.version>
-        <spring-data-jpa.version>2.4.0</spring-data-jpa.version>
-        <jackson-json.version>2.11.3</jackson-json.version>
-        <tomcat.version>9.0.41</tomcat.version>
+        <spring.version>5.3.8</spring.version>
+        <spring.security.version>5.5.1</spring.security.version>
+        <spring-data-jpa.version>2.5.2</spring-data-jpa.version>
+        <jackson.version>2.12.4</jackson.version>
+
+        <tomcat.version>9.0.48</tomcat.version>
 
         <!-- Logging -->
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.30</slf4j.version>
 
         <!--DB-->
-        <postgresql.version>42.2.17</postgresql.version>
+        <postgresql.version>42.2.21</postgresql.version>
         <!--    Tests  -->
-        <junit.jupiter.version>5.7.0</junit.jupiter.version>
-        <assertj.version>3.17.2</assertj.version>
+        <junit.jupiter.version>5.7.2</junit.jupiter.version>
+        <assertj.version>3.19.0</assertj.version>
         <hamcrest.version>2.2</hamcrest.version>
         <json-path.version>2.5.0</json-path.version>
 
         <!-- Hibernate -->
-        <hibernate.version>5.4.22.Final</hibernate.version>
-        <hibernate-validator.version>6.1.6.Final</hibernate-validator.version>
-        <jsoup.version>1.13.1</jsoup.version>
+        <hibernate.version>5.5.2.Final</hibernate.version>
+        <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <javax-el.version>3.0.1-b12</javax-el.version>
 
         <!--Cache-->
-        <ehcache.version>3.9.0</ehcache.version>
+        <ehcache.version>3.9.4</ehcache.version>
 
         <!--webjars-->
-        <webjars-bootstrap.version>4.5.3</webjars-bootstrap.version>
-        <webjars-jquery.version>3.5.1</webjars-jquery.version>
+        <webjars-bootstrap.version>4.6.0-1</webjars-bootstrap.version>
+        <webjars-jquery.version>3.6.0</webjars-jquery.version>
         <webjars-datetimepicker.version>2.5.20-1</webjars-datetimepicker.version>
         <webjars-noty.version>3.1.4</webjars-noty.version>
-        <webjars-datatables.version>1.10.21</webjars-datatables.version>
+        <webjars-datatables.version>1.10.25</webjars-datatables.version>
     </properties>
 
     <build>
@@ -60,9 +61,14 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.1</version>
             </plugin>
             <plugin>
                 <!--https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven -->
@@ -78,8 +84,8 @@
             <!-- https://codehaus-cargo.github.io/cargo/Tomcat+9.x.html -->
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
-                <artifactId>cargo-maven2-plugin</artifactId>
-                <version>1.8.2</version>
+                <artifactId>cargo-maven3-plugin</artifactId>
+                <version>1.9.5</version>
                 <configuration>
                     <container>
                         <containerId>tomcat9x</containerId>
@@ -185,6 +191,8 @@
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
+
+        <!--    Validation-->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -193,12 +201,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>${jsoup.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-jcache</artifactId>
-            <version>${hibernate.version}</version>
+            <version>1.14.2</version>
         </dependency>
 
         <!--http://hibernate.org/validator/documentation/getting-started/#unified-expression-language-el-->
@@ -211,6 +214,11 @@
 
         <!-- Cache -->
         <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jcache</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
             <groupId>javax.cache</groupId>
             <artifactId>cache-api</artifactId>
             <version>1.1.0</version>
@@ -220,6 +228,12 @@
             <artifactId>ehcache</artifactId>
             <scope>runtime</scope>
             <version>${ehcache.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.glassfish.jaxb</groupId>
+                    <artifactId>jaxb-runtime</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!--https://medium.com/criciumadev/its-time-migrating-to-java-11-5eb3868354f9-->
@@ -264,7 +278,7 @@
                     <artifactId>jquery</artifactId>
                 </exclusion>
                 <exclusion>
-<!--                https://getbootstrap.com/docs/4.5/components/popovers         -->
+                    <!--                https://getbootstrap.com/docs/4.5/components/popovers         -->
                     <groupId>org.webjars</groupId>
                     <artifactId>popper.js</artifactId>
                 </exclusion>
@@ -296,17 +310,17 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson-json.version}</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate5</artifactId>
-            <version>${jackson-json.version}</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson-json.version}</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!--Test-->
@@ -316,7 +330,6 @@
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
@@ -358,7 +371,7 @@
                 <dependency>
                     <groupId>org.hsqldb</groupId>
                     <artifactId>hsqldb</artifactId>
-                    <version>2.5.1</version>
+                    <version>2.6.0</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -396,7 +409,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
-                        <version>3.1.2</version>
+                        <version>3.2.0</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>

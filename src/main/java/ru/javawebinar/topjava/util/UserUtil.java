@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.util;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.StringUtils;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
@@ -27,8 +26,7 @@ public class UserUtil {
     }
 
     public static User prepareToSave(User user, PasswordEncoder passwordEncoder) {
-        String password = user.getPassword();
-        user.setPassword(StringUtils.hasText(password) ? passwordEncoder.encode(password) : password);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEmail(user.getEmail().toLowerCase());
         return user;
     }

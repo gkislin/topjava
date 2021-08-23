@@ -9,7 +9,7 @@ import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.TimingExtension;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
+import static ru.javawebinar.topjava.util.validation.ValidationUtil.getRootCause;
 
 @SpringJUnitConfig(locations = {
         "classpath:spring/spring-app.xml",
@@ -22,7 +22,7 @@ import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 public abstract class AbstractServiceTest {
 
     //  Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778
-    protected <T extends Throwable> void validateRootCause(Runnable runnable, Class<T> rootExceptionClass) {
+    protected <T extends Throwable> void validateRootCause(Class<T> rootExceptionClass, Runnable runnable) {
         assertThrows(rootExceptionClass, () -> {
             try {
                 runnable.run();

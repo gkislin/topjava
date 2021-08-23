@@ -18,9 +18,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.javawebinar.topjava.Profiles.HEROKU;
 import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
 import static ru.javawebinar.topjava.UserTestData.*;
-import static ru.javawebinar.topjava.util.exception.ModificationRestrictionException.EXCEPTION_MODIFICATION_RESTRICTION;
+import static ru.javawebinar.topjava.util.exception.UpdateRestrictionException.EXCEPTION_UPDATE_RESTRICTION;
 
-@ActiveProfiles({HEROKU})
+@ActiveProfiles(HEROKU)
 class HerokuRestControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = AdminRestController.REST_URL + '/';
@@ -48,7 +48,7 @@ class HerokuRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(errorType(ErrorType.VALIDATION_ERROR))
-                .andExpect(detailMessage(EXCEPTION_MODIFICATION_RESTRICTION))
+                .andExpect(detailMessage(EXCEPTION_UPDATE_RESTRICTION))
                 .andExpect(status().isUnprocessableEntity());
     }
 
@@ -59,7 +59,7 @@ class HerokuRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin))
                 .content(UserTestData.jsonWithPassword(user, "password")))
                 .andExpect(errorType(ErrorType.VALIDATION_ERROR))
-                .andExpect(detailMessage(EXCEPTION_MODIFICATION_RESTRICTION))
+                .andExpect(detailMessage(EXCEPTION_UPDATE_RESTRICTION))
                 .andExpect(status().isUnprocessableEntity());
     }
 }

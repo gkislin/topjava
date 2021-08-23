@@ -1,8 +1,8 @@
-tr[data-mealExcess="false"] {
+tr[data-meal-excess="false"] {
     color: green;
 }
 
-tr[data-mealExcess="true"] {
+tr[data-meal-excess="true"] {
     color: red;
 }
 
@@ -10,7 +10,7 @@ tr[data-mealExcess="true"] {
     cursor: pointer;
 }
 
-tr[data-userEnabled="false"] {
+tr[data-user-enabled="false"] {
     opacity: 0.3;
 }
 
