@@ -1,5 +1,6 @@
-package ru.javawebinar.topjava;
+package ru.javawebinar.topjava.web.user;
 
+import ru.javawebinar.topjava.MatcherFactory;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.web.json.JsonUtil;
@@ -9,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.web.meal.MealTestData.*;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class UserTestData {
@@ -40,17 +41,7 @@ public class UserTestData {
     }
 
     public static User getUpdated() {
-        User updated = new User(user);
-
-// In case of update with user.id=null in body needs workaround
-// ValidationUtil.assureIdConsistent called after validation
-//      updated.setEmail("update@gmail.com");
-        updated.setName("UpdatedName");
-        updated.setCaloriesPerDay(330);
-        updated.setPassword("newPass");
-        updated.setEnabled(false);
-        updated.setRoles(Collections.singletonList(Role.ADMIN));
-        return updated;
+        return new User(USER_ID, "UpdatedName", "user@yandex.ru", "newPass", 330, false, new Date(), List.of(Role.ADMIN));
     }
 
     public static String jsonWithPassword(User user, String passw) {

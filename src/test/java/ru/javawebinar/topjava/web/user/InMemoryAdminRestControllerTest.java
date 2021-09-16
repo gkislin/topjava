@@ -10,8 +10,8 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Arrays;
 
-import static ru.javawebinar.topjava.UserTestData.NOT_FOUND;
-import static ru.javawebinar.topjava.UserTestData.USER_ID;
+import static ru.javawebinar.topjava.web.user.UserTestData.NOT_FOUND;
+import static ru.javawebinar.topjava.web.user.UserTestData.USER_ID;
 
 class InMemoryAdminRestControllerTest {
     private static final Logger log = LoggerFactory.getLogger(InMemoryAdminRestControllerTest.class);

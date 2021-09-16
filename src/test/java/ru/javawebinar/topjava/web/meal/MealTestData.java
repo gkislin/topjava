@@ -1,5 +1,6 @@
-package ru.javawebinar.topjava;
+package ru.javawebinar.topjava.web.meal;
 
+import ru.javawebinar.topjava.MatcherFactory;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
 

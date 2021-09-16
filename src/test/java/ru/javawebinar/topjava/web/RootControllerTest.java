@@ -6,8 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.javawebinar.topjava.TestUtil.userAuth;
-import static ru.javawebinar.topjava.UserTestData.admin;
-import static ru.javawebinar.topjava.UserTestData.user;
+import static ru.javawebinar.topjava.web.user.UserTestData.admin;
+import static ru.javawebinar.topjava.web.user.UserTestData.user;
 
 class RootControllerTest extends AbstractControllerTest {
 

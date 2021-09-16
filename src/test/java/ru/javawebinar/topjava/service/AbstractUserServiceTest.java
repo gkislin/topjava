@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.web.user.UserTestData.*;
 
 public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 

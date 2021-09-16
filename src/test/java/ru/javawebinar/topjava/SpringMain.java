@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static ru.javawebinar.topjava.TestUtil.mockAuthorize;
-import static ru.javawebinar.topjava.UserTestData.user;
+import static ru.javawebinar.topjava.web.user.UserTestData.user;
 
 public class SpringMain {
     public static void main(String[] args) {
