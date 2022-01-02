@@ -37,7 +37,7 @@ public class UniqueMailValidator implements org.springframework.validation.Valid
             User dbUser = repository.getByEmail(user.getEmail().toLowerCase());
             if (dbUser != null) {
                 Assert.notNull(request, "HttpServletRequest missed");
-                if (request.getMethod().equals("PUT") || (request.getMethod().equals("POST") && user.getId() != null)) {  // update
+                if (request.getMethod().equals("PUT") || (request.getMethod().equals("POST") && user.getId() != null)) {  // update for REST(PUT) and UI(POST)
                     int dbId = dbUser.id();
                     // it is ok, if update ourself
                     if (user.getId() != null && dbId == user.id()) return;

@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.javawebinar</groupId>
@@ -13,43 +12,43 @@
     <url>http://topjava.herokuapp.com/</url>
 
     <properties>
-        <java.version>16</java.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <spring.version>5.3.8</spring.version>
-        <spring.security.version>5.5.1</spring.security.version>
-        <spring-data-jpa.version>2.5.2</spring-data-jpa.version>
-        <jackson.version>2.12.4</jackson.version>
+        <spring.version>5.3.13</spring.version>
+        <spring.security.version>5.6.0</spring.security.version>
+        <spring-data-jpa.version>2.6.0</spring-data-jpa.version>
+        <jackson.version>2.13.0</jackson.version>
 
-        <tomcat.version>9.0.48</tomcat.version>
+        <tomcat.version>9.0.54</tomcat.version>
 
         <!-- Logging -->
-        <logback.version>1.2.3</logback.version>
-        <slf4j.version>1.7.30</slf4j.version>
+        <logback.version>1.2.6</logback.version>
+        <slf4j.version>1.7.32</slf4j.version>
 
         <!--DB-->
-        <postgresql.version>42.2.21</postgresql.version>
+        <postgresql.version>42.3.0</postgresql.version>
         <!--    Tests  -->
-        <junit.jupiter.version>5.7.2</junit.jupiter.version>
-        <assertj.version>3.19.0</assertj.version>
+        <junit.jupiter.version>5.8.1</junit.jupiter.version>
+        <assertj.version>3.21.0</assertj.version>
         <hamcrest.version>2.2</hamcrest.version>
-        <json-path.version>2.5.0</json-path.version>
+        <json-path.version>2.6.0</json-path.version>
 
         <!-- Hibernate -->
-        <hibernate.version>5.5.2.Final</hibernate.version>
+        <hibernate.version>5.6.1.Final</hibernate.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <javax-el.version>3.0.1-b12</javax-el.version>
 
         <!--Cache-->
-        <ehcache.version>3.9.4</ehcache.version>
+        <ehcache.version>3.9.7</ehcache.version>
 
         <!--webjars-->
-        <webjars-bootstrap.version>4.6.0-1</webjars-bootstrap.version>
+        <webjars-bootstrap.version>4.6.1</webjars-bootstrap.version>
         <webjars-jquery.version>3.6.0</webjars-jquery.version>
         <webjars-datetimepicker.version>2.5.20-1</webjars-datetimepicker.version>
         <webjars-noty.version>3.1.4</webjars-noty.version>
-        <webjars-datatables.version>1.10.25</webjars-datatables.version>
+        <webjars-datatables.version>1.11.3</webjars-datatables.version>
     </properties>
 
     <build>
@@ -61,14 +60,14 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>16</source>
-                    <target>16</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>3.3.2</version>
             </plugin>
             <plugin>
                 <!--https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven -->
@@ -85,7 +84,7 @@
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven3-plugin</artifactId>
-                <version>1.9.5</version>
+                <version>1.9.8</version>
                 <configuration>
                     <container>
                         <containerId>tomcat9x</containerId>
@@ -278,7 +277,7 @@
                     <artifactId>jquery</artifactId>
                 </exclusion>
                 <exclusion>
-                    <!--                https://getbootstrap.com/docs/4.5/components/popovers         -->
+<!--                https://getbootstrap.com/docs/4.5/components/popovers         -->
                     <groupId>org.webjars</groupId>
                     <artifactId>popper.js</artifactId>
                 </exclusion>
@@ -362,6 +361,13 @@
             <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
+        <!--        https://youtrack.jetbrains.com/issue/IDEA-231927-->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>1.8.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -371,7 +377,7 @@
                 <dependency>
                     <groupId>org.hsqldb</groupId>
                     <artifactId>hsqldb</artifactId>
-                    <version>2.6.0</version>
+                    <version>2.6.1</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -422,7 +428,7 @@
                                         <artifactItem>
                                             <groupId>com.heroku</groupId>
                                             <artifactId>webapp-runner-main</artifactId>
-                                            <version>9.0.41.0</version>
+                                            <version>9.0.52.1</version>
                                             <destFileName>webapp-runner.jar</destFileName>
                                         </artifactItem>
                                     </artifactItems>

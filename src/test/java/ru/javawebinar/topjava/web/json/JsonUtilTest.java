@@ -1,8 +1,8 @@
 package ru.javawebinar.topjava.web.json;
 
 import org.junit.jupiter.api.Test;
-import ru.javawebinar.topjava.web.meal.MealTestData;
-import ru.javawebinar.topjava.web.user.UserTestData;
+import ru.javawebinar.topjava.MealTestData;
+import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 
@@ -12,7 +12,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.javawebinar.topjava.web.meal.MealTestData.*;
+import static ru.javawebinar.topjava.MealTestData.*;
 
 class JsonUtilTest {
 
@@ -21,7 +21,7 @@ class JsonUtilTest {
         String json = JsonUtil.writeValue(adminMeal1);
         System.out.println(json);
         Meal meal = JsonUtil.readValue(json, Meal.class);
-        MATCHER.assertMatch(meal, adminMeal1);
+        MEAL_MATCHER.assertMatch(meal, adminMeal1);
     }
 
     @Test
@@ -29,7 +29,7 @@ class JsonUtilTest {
         String json = JsonUtil.writeValue(meals);
         System.out.println(json);
         List<Meal> meals = JsonUtil.readValues(json, Meal.class);
-        MATCHER.assertMatch(meals, MealTestData.meals);
+        MEAL_MATCHER.assertMatch(meals, MealTestData.meals);
     }
 
     @Test

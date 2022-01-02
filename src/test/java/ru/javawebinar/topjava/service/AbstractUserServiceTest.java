@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.javawebinar.topjava.web.user.UserTestData.*;
+import static ru.javawebinar.topjava.UserTestData.*;
 
 public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
@@ -26,8 +26,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         int newId = created.id();
         User newUser = getNew();
         newUser.setId(newId);
-        MATCHER.assertMatch(created, newUser);
-        MATCHER.assertMatch(service.get(newId), newUser);
+        USER_MATCHER.assertMatch(created, newUser);
+        USER_MATCHER.assertMatch(service.get(newId), newUser);
     }
 
     @Test
@@ -50,7 +50,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     void get() {
         User user = service.get(ADMIN_ID);
-        MATCHER.assertMatch(user, admin);
+        USER_MATCHER.assertMatch(user, admin);
     }
 
     @Test
@@ -61,20 +61,20 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     void getByEmail() {
         User user = service.getByEmail("admin@gmail.com");
-        MATCHER.assertMatch(user, admin);
+        USER_MATCHER.assertMatch(user, admin);
     }
 
     @Test
     void update() {
         User updated = getUpdated();
         service.update(updated);
-        MATCHER.assertMatch(service.get(USER_ID), getUpdated());
+        USER_MATCHER.assertMatch(service.get(USER_ID), getUpdated());
     }
 
     @Test
     void getAll() {
         List<User> all = service.getAll();
-        MATCHER.assertMatch(all, admin, user);
+        USER_MATCHER.assertMatch(all, admin, user);
     }
 
     @Test

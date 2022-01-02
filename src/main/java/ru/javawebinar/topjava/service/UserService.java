@@ -34,12 +34,12 @@ public class UserService implements UserDetailsService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
 
-    private boolean modificationRestriction;
+    private boolean updateRestriction;
 
     @Autowired
     @SuppressWarnings("deprecation")
     public void setEnvironment(Environment environment) {
-        modificationRestriction = environment.acceptsProfiles(Profiles.HEROKU);
+        updateRestriction = environment.acceptsProfiles(Profiles.HEROKU);
     }
 
     public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
@@ -116,7 +116,7 @@ public class UserService implements UserDetailsService {
     }
 
     protected void checkModificationAllowed(int id) {
-        if (modificationRestriction && id < AbstractBaseEntity.START_SEQ + 2) {
+        if (updateRestriction && id < AbstractBaseEntity.START_SEQ + 2) {
             throw new UpdateRestrictionException();
         }
     }

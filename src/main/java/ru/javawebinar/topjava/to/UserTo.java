@@ -2,8 +2,8 @@ package ru.javawebinar.topjava.to;
 
 import org.hibernate.validator.constraints.Range;
 import ru.javawebinar.topjava.HasIdAndEmail;
-import ru.javawebinar.topjava.util.UserUtil;
 import ru.javawebinar.topjava.util.validation.NoHtml;
+import ru.javawebinar.topjava.util.UserUtil;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -12,9 +12,14 @@ import javax.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class UserTo extends NamedTo implements HasIdAndEmail, Serializable {
+public class UserTo extends BaseTo implements HasIdAndEmail, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+
+    @NotBlank
+    @Size(min = 2, max = 100)
+    @NoHtml
+    private String name;
 
     @Email
     @NotBlank
@@ -34,7 +39,8 @@ public class UserTo extends NamedTo implements HasIdAndEmail, Serializable {
     }
 
     public UserTo(Integer id, String name, String email, String password, int caloriesPerDay) {
-        super(id, name);
+        super(id);
+        this.name = name;
         this.email = email;
         this.password = password;
         this.caloriesPerDay = caloriesPerDay;
@@ -46,6 +52,14 @@ public class UserTo extends NamedTo implements HasIdAndEmail, Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

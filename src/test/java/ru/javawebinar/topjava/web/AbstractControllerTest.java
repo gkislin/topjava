@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
-import ru.javawebinar.topjava.AllActiveProfileResolver;
+import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.util.exception.ErrorType;
 
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@WebAppConfiguration
 //@ExtendWith(SpringExtension.class)
 @Transactional
-@ActiveProfiles(resolver = AllActiveProfileResolver.class)
+@ActiveProfiles(resolver = ActiveDbProfileResolver.class, profiles = Profiles.REPOSITORY_IMPLEMENTATION)
 public abstract class AbstractControllerTest {
     private static final Locale RU_LOCALE = new Locale("ru");
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
@@ -46,7 +46,7 @@ public abstract class AbstractControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    public Environment env;
+    private Environment env;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -54,7 +54,7 @@ public abstract class AbstractControllerTest {
     @Autowired
     protected MessageSourceAccessor messageSourceAccessor;
 
-    public void assumeDataJpa() {
+    protected void assumeDataJpa() {
         Assumptions.assumeTrue(env.acceptsProfiles(org.springframework.core.env.Profiles.of(Profiles.DATAJPA)), "DATA-JPA only");
     }
 
@@ -75,11 +75,11 @@ public abstract class AbstractControllerTest {
         return messageSourceAccessor.getMessage(code, RU_LOCALE);
     }
 
-    public ResultMatcher errorType(ErrorType type) {
+    protected ResultMatcher errorType(ErrorType type) {
         return jsonPath("$.type").value(type.name());
     }
 
-    public ResultMatcher detailMessage(String code) {
+    protected ResultMatcher detailMessage(String code) {
         return jsonPath("$.details").value(getMessage(code));
     }
 }

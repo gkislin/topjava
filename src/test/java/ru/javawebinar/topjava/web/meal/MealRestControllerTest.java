@@ -20,12 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.javawebinar.topjava.web.meal.MealTestData.MATCHER;
-import static ru.javawebinar.topjava.web.meal.MealTestData.getNew;
-import static ru.javawebinar.topjava.web.meal.MealTestData.getUpdated;
-import static ru.javawebinar.topjava.web.meal.MealTestData.*;
+import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
+import static ru.javawebinar.topjava.MealTestData.getNew;
+import static ru.javawebinar.topjava.MealTestData.getUpdated;
+import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
-import static ru.javawebinar.topjava.web.user.UserTestData.*;
+import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.util.MealsUtil.createTo;
 import static ru.javawebinar.topjava.util.MealsUtil.getTos;
 import static ru.javawebinar.topjava.util.exception.ErrorType.VALIDATION_ERROR;
@@ -45,7 +45,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MATCHER.contentJson(meal1));
+                .andExpect(MEAL_MATCHER.contentJson(meal1));
     }
 
     @Test
@@ -85,7 +85,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        MATCHER.assertMatch(mealService.get(MEAL1_ID, USER_ID), updated);
+        MEAL_MATCHER.assertMatch(mealService.get(MEAL1_ID, USER_ID), updated);
     }
 
     @Test
@@ -96,11 +96,11 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(newMeal)));
 
-        Meal created = MATCHER.readFromJson(action);
+        Meal created = MEAL_MATCHER.readFromJson(action);
         int newId = created.id();
         newMeal.setId(newId);
-        MATCHER.assertMatch(created, newMeal);
-        MATCHER.assertMatch(mealService.get(newId, USER_ID), newMeal);
+        MEAL_MATCHER.assertMatch(created, newMeal);
+        MEAL_MATCHER.assertMatch(mealService.get(newId, USER_ID), newMeal);
     }
 
     @Test
