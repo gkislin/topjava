@@ -89,8 +89,8 @@ public class User extends AbstractNamedEntity implements HasIdAndEmail {
         this(u.id, u.name, u.email, u.password, u.caloriesPerDay, u.enabled, u.registered, u.roles);
     }
 
-    public User(Integer id, String name, String email, String password, int caloriesPerDay, Role role, Role... roles) {
-        this(id, name, email, password, caloriesPerDay, true, new Date(), EnumSet.of(role, roles));
+    public User(Integer id, String name, String email, String password, int caloriesPerDay, Role... roles) {
+        this(id, name, email, password, caloriesPerDay, true, new Date(), Arrays.asList((roles)));
     }
 
     public User(Integer id, String name, String email, String password, int caloriesPerDay, boolean enabled, Date registered, Collection<Role> roles) {
@@ -144,12 +144,12 @@ public class User extends AbstractNamedEntity implements HasIdAndEmail {
         return roles;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setRoles(Collection<Role> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public List<Meal> getMeals() {
