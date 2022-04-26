@@ -21,7 +21,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     protected UserService service;
 
     @Test
-    void create() {
+    public void create() {
         User created = service.create(getNew());
         int newId = created.id();
         User newUser = getNew();
@@ -74,7 +74,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     void getAll() {
         List<User> all = service.getAll();
-        USER_MATCHER.assertMatch(all, admin, user);
+        USER_MATCHER.assertMatch(all, admin, guest, user);
     }
 
     @Test
