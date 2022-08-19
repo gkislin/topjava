@@ -54,7 +54,6 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
                 service.create(new Meal(null, meal1.getDateTime(), "duplicate", 100), USER_ID));
     }
 
-
     @Test
     void get() {
         Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);

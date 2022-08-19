@@ -42,6 +42,7 @@ public class UserTestData {
 
     public static User getUpdated() {
         User updated = new User(user);
+
 // In case of update with user.id=null in body needs workaround
 // ValidationUtil.assureIdConsistent called after validation
 //      updated.setEmail("update@gmail.com");

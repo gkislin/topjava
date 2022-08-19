@@ -9,7 +9,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.View;
 import ru.javawebinar.topjava.model.User;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 

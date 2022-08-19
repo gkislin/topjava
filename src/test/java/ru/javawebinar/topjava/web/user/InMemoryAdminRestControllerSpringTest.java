@@ -21,7 +21,7 @@ class InMemoryAdminRestControllerSpringTest {
     private InMemoryUserRepository repository;
 
     @BeforeEach
-    void setup() {
+    public void setUp() {
         repository.init();
     }
 

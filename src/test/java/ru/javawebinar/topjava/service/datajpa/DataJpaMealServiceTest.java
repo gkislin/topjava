@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.service.datajpa;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
+import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.AbstractMealServiceTest;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -23,6 +24,6 @@ class DataJpaMealServiceTest extends AbstractMealServiceTest {
     @Test
     void getWithUserNotFound() {
         Assertions.assertThrows(NotFoundException.class,
-                () -> service.getWithUser(1, ADMIN_ID));
+                () -> service.getWithUser(MealTestData.NOT_FOUND, ADMIN_ID));
     }
 }

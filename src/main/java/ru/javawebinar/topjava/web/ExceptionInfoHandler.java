@@ -29,7 +29,7 @@ public class ExceptionInfoHandler {
     public static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
     public static final String EXCEPTION_DUPLICATE_DATETIME = "exception.meal.duplicateDateTime";
 
-    private static final Map<String, String> CONSTRAINS_I18N_MAP = Map.of(
+    private static final Map<String, String> CONSTRAINTS_I18N_MAP = Map.of(
             "users_unique_email_idx", EXCEPTION_DUPLICATE_EMAIL,
             "meals_unique_user_datetime_idx", EXCEPTION_DUPLICATE_DATETIME);
 
@@ -40,7 +40,7 @@ public class ExceptionInfoHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorInfo> handleError(HttpServletRequest req, NotFoundException e) {
+    public ResponseEntity<ErrorInfo> notFoundError(HttpServletRequest req, NotFoundException e) {
         return logAndGetErrorInfo(req, e, false, DATA_NOT_FOUND);
     }
 
@@ -54,7 +54,7 @@ public class ExceptionInfoHandler {
         String rootMsg = ValidationUtil.getRootCause(e).getMessage();
         if (rootMsg != null) {
             String lowerCaseMsg = rootMsg.toLowerCase();
-            for (Map.Entry<String, String> entry : CONSTRAINS_I18N_MAP.entrySet()) {
+            for (Map.Entry<String, String> entry : CONSTRAINTS_I18N_MAP.entrySet()) {
                 if (lowerCaseMsg.contains(entry.getKey())) {
                     return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, messageSourceAccessor.getMessage(entry.getValue()));
                 }
@@ -73,12 +73,12 @@ public class ExceptionInfoHandler {
     }
 
     @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
-    public ResponseEntity<ErrorInfo> illegalRequestDataError(HttpServletRequest req, Exception e) {
+    public ResponseEntity<ErrorInfo> validationError(HttpServletRequest req, Exception e) {
         return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorInfo> handleError(HttpServletRequest req, Exception e) {
+    public ResponseEntity<ErrorInfo> internalError(HttpServletRequest req, Exception e) {
         return logAndGetErrorInfo(req, e, true, APP_ERROR);
     }
 
