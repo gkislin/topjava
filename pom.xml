@@ -20,7 +20,7 @@
         <spring-data-jpa.version>2.7.1</spring-data-jpa.version>
         <spring.security.version>5.7.2</spring.security.version>
 
-        <jackson.version>2.13.3</jackson.version>
+        <jackson.version>2.13.4.2</jackson.version>
         <tomcat.version>9.0.64</tomcat.version>
 
         <!-- Logging -->
